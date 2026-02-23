@@ -1,32 +1,43 @@
-# blackroad-crypto-payment-processor
+# BlackRoad Crypto Payment Processor
 
-[![GitHub](https://img.shields.io/badge/GitHub-BlackRoad-OS-purple?style=for-the-badge&logo=github)](https://github.com/BlackRoad-OS/blackroad-crypto-payment-processor)
-[![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)](https://github.com/BlackRoad-OS/blackroad-crypto-payment-processor)
-[![BlackRoad](https://img.shields.io/badge/BlackRoad-OS-black?style=for-the-badge)](https://blackroad.io)
+> Invoice management for crypto payments: BTC, ETH, USDC, SOL and more — with exchange rate simulation, confirmation tracking, and CSV accounting export.
 
-# 🖤🛣️ BlackRoad Crypto Payment Processor
+Part of the [BlackRoad OS](https://github.com/BlackRoad-OS) platform.
 
-Part of the BlackRoad Product Empire - 350+ enterprise solutions
+## Features
 
-## 🚀 Quick Start
+- **Invoice lifecycle**: `create_invoice()` → `mark_confirmed()` → accounting export
+- **Multi-currency**: USD, EUR, GBP, JPY → BTC, ETH, USDC, USDT, SOL, LTC, XRP
+- **Exchange rates**: Mock rates (CoinGecko-compatible interface for live data)
+- **Confirmation tracking**: Per-crypto required confirmations (BTC=6, ETH=12, SOL=32)
+- **Accounting CSV**: Export confirmed invoices for bookkeeping
+- **Revenue summary**: Aggregated by fiat currency and crypto asset
+
+## Usage
 
 ```bash
-./blackroad-crypto-payment-processor.sh
+# Create invoice
+python src/crypto_payment_processor.py create 100.00 --currency USD --crypto BTC
+
+# Mark confirmed
+python src/crypto_payment_processor.py confirm INV-XXXXXXXX <txhash> --confirmations 6
+
+# List pending
+python src/crypto_payment_processor.py pending
+
+# Export accounting CSV
+python src/crypto_payment_processor.py export
+
+# Get exchange rate
+python src/crypto_payment_processor.py rate USD BTC
 ```
 
-## 🎨 BlackRoad Design System
+## Architecture
 
-- **Hot Pink**: #FF1D6C
-- **Amber**: #F5A623  
-- **Electric Blue**: #2979FF
-- **Violet**: #9C27B0
+- `src/crypto_payment_processor.py` — 660+ lines: `Invoice`, `Confirmation`, `CryptoPaymentDB`, `CryptoPaymentProcessor`
+- `tests/` — 18 test functions
+- SQLite: `invoices` + `confirmations` tables
 
-## 📚 Documentation
+## License
 
-Full docs: https://docs.blackroad.io
-
-## 🖤 BlackRoad Empire
-
-Part of 350+ products across 46 categories. Built with ∞ vision.
-
-**BlackRoad OS, Inc.** | Built with Claude
+Proprietary — © BlackRoad OS, Inc. All rights reserved.
