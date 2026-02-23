@@ -1,43 +1,40 @@
-# BlackRoad Crypto Payment Processor
+# blackroad-crypto-payment-processor
 
-> Invoice management for crypto payments: BTC, ETH, USDC, SOL and more — with exchange rate simulation, confirmation tracking, and CSV accounting export.
-
-Part of the [BlackRoad OS](https://github.com/BlackRoad-OS) platform.
+Production-grade crypto payment processing for BTC, ETH, SOL, USDC, MATIC, and AVAX.
 
 ## Features
+- Multi-coin payment creation with auto-generated mock tx hashes
+- Mock confirmation engine based on realistic block times per coin
+- USD value calculation using configurable exchange rates
+- Network fee estimation per coin type
+- Wallet summary with net balance per coin and USD total
+- Fraud detection: high-value threshold alerts and rapid-payment velocity checks
+- Transaction export in JSON and CSV formats
+- SQLite persistence with WAL mode
 
-- **Invoice lifecycle**: `create_invoice()` → `mark_confirmed()` → accounting export
-- **Multi-currency**: USD, EUR, GBP, JPY → BTC, ETH, USDC, USDT, SOL, LTC, XRP
-- **Exchange rates**: Mock rates (CoinGecko-compatible interface for live data)
-- **Confirmation tracking**: Per-crypto required confirmations (BTC=6, ETH=12, SOL=32)
-- **Accounting CSV**: Export confirmed invoices for bookkeeping
-- **Revenue summary**: Aggregated by fiat currency and crypto asset
+## Supported Coins
+| Coin | Block Time | Required Confirmations |
+|------|-----------|------------------------|
+| BTC  | ~10 min   | 3                      |
+| ETH  | ~15 sec   | 12                     |
+| SOL  | ~2 sec    | 32                     |
+| USDC | ~15 sec   | 12                     |
+| MATIC| ~3 sec    | 64                     |
+| AVAX | ~2 sec    | 10                     |
 
 ## Usage
-
 ```bash
-# Create invoice
-python src/crypto_payment_processor.py create 100.00 --currency USD --crypto BTC
-
-# Mark confirmed
-python src/crypto_payment_processor.py confirm INV-XXXXXXXX <txhash> --confirmations 6
-
-# List pending
-python src/crypto_payment_processor.py pending
-
-# Export accounting CSV
-python src/crypto_payment_processor.py export
-
-# Get exchange rate
-python src/crypto_payment_processor.py rate USD BTC
+python crypto_payments.py init
+python crypto_payments.py create 0xSEND 0xRECV 1.5 ETH --memo "Payment for services"
+python crypto_payments.py status <payment_id>
+python crypto_payments.py wallet-summary 0xSEND
+python crypto_payments.py suspicious --threshold 50000
+python crypto_payments.py export --format csv --wallet 0xSEND
+python crypto_payments.py network-stats
 ```
 
-## Architecture
-
-- `src/crypto_payment_processor.py` — 660+ lines: `Invoice`, `Confirmation`, `CryptoPaymentDB`, `CryptoPaymentProcessor`
-- `tests/` — 18 test functions
-- SQLite: `invoices` + `confirmations` tables
-
-## License
-
-Proprietary — © BlackRoad OS, Inc. All rights reserved.
+## Testing
+```bash
+pip install pytest
+pytest test_crypto_payments.py -v
+```
